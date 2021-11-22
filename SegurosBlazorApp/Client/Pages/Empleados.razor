@@ -1,0 +1,74 @@
+﻿@page "/empleados"
+@using SegurosBlazorApp.Shared.Models
+@inject HttpClient Http
+
+<PageTitle>Empleados</PageTitle>
+
+<h1>Empleados</h1>
+
+<p>Empleados de la empresa</p>
+
+<div>
+    <label>Nombre:</label><input type="text" /><br/>
+    <label>Apellido:</label><input type="text" /><br/>
+    <label>Telefono:</label><input type="text" /><br/>
+    <label>NumeroEmpleado:</label><input type="text" /><br/>
+    <button class="btn btn-primary" @onclick="GuardarEmpleado">Guardar</button>
+</div>
+
+<br />
+
+
+@if (forecasts == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Telefono</th>
+                <th>Numero Empleado</th>
+                <th>BORRAR</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.EmpleadoId</td>
+                    <td>@forecast.Persona.Nombre</td>
+                    <td>@forecast.Persona.Apellidos</td>
+                    <td>@forecast.Persona.Telefono</td>
+                    <td>@forecast.NumeroEmpleado</td>
+                    <td><button class="btn btn-primary" id=@forecast.EmpleadoId @onclick="()=>BorrarEmpleado(forecast.EmpleadoId)">Borrar</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Empleado[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
+    }
+
+    private async void BorrarEmpleado(int id)
+    {
+        HttpResponseMessage message = await Http.DeleteAsync("api/Empleado/"+id.ToString());
+        forecasts = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
+        StateHasChanged();
+    }
+
+    private async void GuardarEmpleado()
+    {
+    }
+
+}
