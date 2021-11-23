@@ -8,7 +8,7 @@ namespace SegurosBlazorApp.Shared.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EmpleadoId { get; set; }
-        public int NumeroEmpleado { get; set; }
+        public string NumeroEmpleado { get; set; }
 
 
         public int? PersonaId { get; set; }

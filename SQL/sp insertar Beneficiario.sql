@@ -1,4 +1,4 @@
-CREATE PROCEDURE InsertBeneficiario
+ALTER PROCEDURE InsertBeneficiario
 	@BeneficiarioId INT,
 	@EmpleadoId INT,
 	@Nombre NVARCHAR(MAX),
@@ -35,7 +35,7 @@ END
 
 EXEC InsertBeneficiario
 NULL,
-3,
+8,
 'fghfgh',
 'najeergtra',
 '1986-01-05',

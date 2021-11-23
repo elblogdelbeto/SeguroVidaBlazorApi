@@ -9,11 +9,73 @@
 <p>Empleados de la empresa</p>
 
 <div>
-    <label>Nombre:</label><input type="text" /><br/>
-    <label>Apellido:</label><input type="text" /><br/>
-    <label>Telefono:</label><input type="text" /><br/>
-    <label>NumeroEmpleado:</label><input type="text" /><br/>
-    <button class="btn btn-primary" @onclick="GuardarEmpleado">Guardar</button>
+    <div class="row">
+        <div class="col col-md-1">
+            <div class="row"><label>Nombre:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@nombres" /></div>
+        </div>
+        <div class="col col-md-1" />
+        <div class="col col-md-1">
+            <div class="row"><label>Apellidos:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@apellidos" /></div>
+        </div>
+        <div class="col col-md-5" />
+    </div>
+    <div class="row">
+        <div class="col col-md-1">
+            <div class="row"><label>Nacimiento:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="date" @bind-value="@fechaNacimiento" /></div>
+        </div>
+        <div class="col col-md-1" />
+        <div class="col col-md-1">
+            <div class="row"><label>CURP:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@CURP" /></div>
+        </div>
+        <div class="col col-md-5" />
+    </div>
+    <div class="row">
+        <div class="col col-md-1">
+            <div class="row"><label>SSN:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@SSN" /></div>
+        </div>
+        <div class="col col-md-1" />
+        <div class="col col-md-1">
+            <div class="row"><label>Teléfono:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input @bind=telefono /></div>
+        </div>
+        <div class="col col-md-5" />
+    </div>
+    <div class="row">
+        <div class="col col-md-1">
+            <div class="row"><label>Nacionalidad:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@nacionalidad" /></div>
+        </div>
+        <div class="col col-md-1" />
+        <div class="col col-md-1">
+            <div class="row"><label>Numero Empleado:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@numeroEmpleado" /></div>
+        </div>
+        <div class="col col-md-5" />
+    </div>
+    <div class="row">
+        <button class="btn btn-primary col-md-3" @onclick="GuardarEmpleado">Guardar</button>
+    </div>
 </div>
 
 <br />
@@ -33,7 +95,7 @@ else
                 <th>Apellido</th>
                 <th>Telefono</th>
                 <th>Numero Empleado</th>
-                <th>BORRAR</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -54,6 +116,14 @@ else
 
 @code {
     private Empleado[]? forecasts;
+    private string nombres;
+    private string apellidos = string.Empty;
+    private DateTime fechaNacimiento = Convert.ToDateTime("1990-01-01");
+    private string CURP = string.Empty;
+    private string SSN = string.Empty;
+    string telefono { get; set; }
+    private string nacionalidad = string.Empty;
+    private string numeroEmpleado = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -69,6 +139,26 @@ else
 
     private async void GuardarEmpleado()
     {
+        Empleado empleado = new Empleado();
+        empleado.EmpleadoId = 0;
+        empleado.NumeroEmpleado = numeroEmpleado;
+        empleado.PersonaId = 0;
+        empleado.Persona = new Persona();
+        empleado.Persona.Nombre = nombres;
+        empleado.Persona.Apellidos = apellidos;
+        empleado.Persona.CURP = CURP;
+        empleado.Persona.FechaNacimiento = Convert.ToDateTime(fechaNacimiento);
+        empleado.Persona.Nacionalidad = nacionalidad;
+        empleado.Persona.PersonaId = 0;
+        empleado.Persona.SSN = SSN;
+        empleado.Persona.Telefono= telefono;
+
+
+
+
+        HttpResponseMessage message = await Http.PostAsJsonAsync("api/Empleado", empleado);
+        forecasts = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
+        StateHasChanged();
     }
 
 }

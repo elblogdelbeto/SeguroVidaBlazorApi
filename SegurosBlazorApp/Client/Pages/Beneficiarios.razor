@@ -1,0 +1,238 @@
+﻿@page "/beneficiarios"
+@using SegurosBlazorApp.Shared.Models
+@inject HttpClient Http
+
+<PageTitle>Beneficiarios</PageTitle>
+
+<h1>Beneficiarios</h1>
+
+<p>Beneficiarios de la poliza de seguros para cada empleado</p>
+
+@if (empleados == null)
+{
+    <p>
+        <em>Cargando empleados...</em>
+    </p>
+}
+else
+{
+    <select class="custom-select" @onchange="OnEmpleadoChanged" title="Region is required ">
+        <option value="">Selecciona empleado</option>
+        @foreach (var empleado in empleados)
+        {
+            <option value="@empleado.EmpleadoId"> @empleado.Persona.Nombre</option>
+        }
+    </select>
+}
+
+<br />
+<br />
+
+<div>
+    <div class="row">
+        <div class="col col-md-1">
+            <div class="row"><label>Nombre:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@nombreBeneficiario" /></div>
+        </div>
+        <div class="col col-md-1" />
+        <div class="col col-md-1">
+            <div class="row"><label>Apellidos:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@apellidos" /></div>
+        </div>
+        <div class="col col-md-5" />
+    </div>
+    <div class="row">
+        <div class="col col-md-1">
+            <div class="row"><label>Nacimiento:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="date" @bind-value="@fechaNacimiento" /></div>
+        </div>
+        <div class="col col-md-1" />
+        <div class="col col-md-1">
+            <div class="row"><label>CURP:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@CURP" /></div>
+        </div>
+        <div class="col col-md-5" />
+    </div>
+    <div class="row">
+        <div class="col col-md-1">
+            <div class="row"><label>SSN:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@SSN" /></div>
+        </div>
+        <div class="col col-md-1" />
+        <div class="col col-md-1">
+            <div class="row"><label>Teléfono:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input @bind=telefono /></div>
+        </div>
+        <div class="col col-md-5" />
+    </div>
+    <div class="row">
+        <div class="col col-md-1">
+            <div class="row"><label>Nacionalidad:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row"><input type="text" @bind-value="@nacionalidad" /></div>
+        </div>
+        <div class="col col-md-1" />
+        <div class="col col-md-1">
+            <div class="row"><label>Porcentaje:</label></div>
+        </div>
+        <div class="col col-md-2">
+            <div class="row">
+
+                <select class="custom-select" @onchange="OnPorcentajeChanged" title="porcentaje requerido">  
+                     <option value=0>Selecciona Porcentaje</option>
+                    @for (int i = maximoPorcentajeAsignar; i>=0; i--)
+                    {
+                        <option value=@i> @i</option>
+                    }
+                </select>
+
+            </div>
+        </div>
+        <div class="col col-md-5" />
+    </div>
+    <div class="row">
+        <button class="btn btn-primary col-md-3" disabled="@ButtonIsDisabled" @onclick="GuardarBeneficiario">Guardar</button>
+    </div>
+</div>
+
+<br />
+<br />
+
+
+
+@if (beneficiarios == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Telefono</th>
+                <th>Porcentaje Participacion</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var beneficiario in beneficiarios)
+            {
+                <tr>
+                    <td>@beneficiario.BeneficiarioId</td>
+                    <td>@beneficiario.Persona.Nombre</td>
+                    <td>@beneficiario.Persona.Apellidos</td>
+                    <td>@beneficiario.Persona.Telefono</td>
+                    <td>@beneficiario.PorcentajeParticipacion</td>
+                    <td><button class="btn btn-primary" id=@beneficiario.BeneficiarioId @onclick="()=>BorrarBeneficiario(beneficiario.BeneficiarioId)">Borrar</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Empleado[]? empleados;
+    private Beneficiario[]? beneficiarios;
+    protected bool ButtonIsDisabled { get; set; }
+
+    private string empleadoId = string.Empty;
+
+    private string nombreBeneficiario = string.Empty;
+    private string apellidos = string.Empty;
+    private DateTime fechaNacimiento = Convert.ToDateTime("1990-01-01");
+    private string CURP = string.Empty;
+    private string SSN = string.Empty;
+    string telefono { get; set; }
+    private string nacionalidad = string.Empty;
+    private string porcentajeParticipacion = "0";
+
+    private int maximoPorcentajeAsignar = 0;
+
+
+    private async void OnEmpleadoChanged(ChangeEventArgs e)
+    {
+        porcentajeParticipacion = "0";
+
+        if(e.Value != null)
+            empleadoId = e.Value.ToString();
+
+        if (empleadoId == string.Empty)
+        {
+            ButtonIsDisabled = true;
+            maximoPorcentajeAsignar = 0;
+        }
+        else
+        {
+            maximoPorcentajeAsignar = await Http.GetFromJsonAsync<int>("api/Beneficiario/PorcentajeDisponible/"+empleadoId);
+            if (maximoPorcentajeAsignar < 0)
+                maximoPorcentajeAsignar = 0;
+            ButtonIsDisabled = false;
+        }
+
+        string rutaCargarRegistros = empleadoId != string.Empty ? "api/Beneficiario/PorEmpleado/"+empleadoId : "api/Beneficiario";
+        beneficiarios = await Http.GetFromJsonAsync<Beneficiario[]>(rutaCargarRegistros);
+
+        StateHasChanged();
+    }
+
+    private async void OnPorcentajeChanged(ChangeEventArgs e)
+    {
+        porcentajeParticipacion = e.Value.ToString();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ButtonIsDisabled = true;
+        empleados = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
+        beneficiarios = await Http.GetFromJsonAsync<Beneficiario[]>("api/Beneficiario");
+    }
+
+    private async void BorrarBeneficiario(int id)
+    {
+        HttpResponseMessage message = await Http.DeleteAsync("api/Beneficiario/"+id.ToString());
+
+        string rutaCargarRegistros = empleadoId != string.Empty ? "api/Beneficiario/PorEmpleado/"+empleadoId : "api/Beneficiario";
+        beneficiarios = await Http.GetFromJsonAsync<Beneficiario[]>(rutaCargarRegistros);
+        StateHasChanged();
+    }
+
+    private async void GuardarBeneficiario()
+    {
+        Beneficiario beneficiario = new Beneficiario();
+        beneficiario.BeneficiarioId = 0;
+        beneficiario.EmpleadoId = Convert.ToInt32(empleadoId);
+        beneficiario.PorcentajeParticipacion = Convert.ToInt32(porcentajeParticipacion);
+        beneficiario.PersonaId = 0;
+        beneficiario.Persona = new Persona();
+        beneficiario.Persona.Nombre = nombreBeneficiario;
+        beneficiario.Persona.Apellidos = apellidos;
+        beneficiario.Persona.CURP = CURP;
+        beneficiario.Persona.FechaNacimiento = Convert.ToDateTime(fechaNacimiento);
+        beneficiario.Persona.Nacionalidad = nacionalidad;
+        beneficiario.Persona.PersonaId = 0;
+        beneficiario.Persona.SSN = SSN;
+        beneficiario.Persona.Telefono= telefono;
+
+        HttpResponseMessage message = await Http.PostAsJsonAsync("api/Beneficiario", beneficiario);
+        beneficiarios = await Http.GetFromJsonAsync<Beneficiario[]>("api/Beneficiario/PorEmpleado/"+empleadoId);
+        OnEmpleadoChanged(new ChangeEventArgs());
+    }
+
+}

@@ -1,4 +1,4 @@
-CREATE PROCEDURE DeleteBeneficiario
+ALTER PROCEDURE DeleteBeneficiario
 	@BeneficiarioId INT
 	AS
 BEGIN
