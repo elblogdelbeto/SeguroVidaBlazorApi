@@ -20,7 +20,7 @@ else
         <option value="">Selecciona empleado</option>
         @foreach (var empleado in empleados)
         {
-            <option value="@empleado.EmpleadoId"> @empleado.Persona.Nombre</option>
+            <option value="@empleado.EmpleadoId"> @empleado.Persona.Nombre  @empleado.Persona.Apellidos</option>
         }
     </select>
 }
@@ -125,7 +125,11 @@ else
                 <th>ID</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
+                <th>Nacimiento</th>
+                <th>CURP</th>
+                <th>SSN</th>
                 <th>Telefono</th>
+                <th>Nacionalidad</th>
                 <th>Porcentaje Participacion</th>
                 <th></th>
             </tr>
@@ -137,7 +141,11 @@ else
                     <td>@beneficiario.BeneficiarioId</td>
                     <td>@beneficiario.Persona.Nombre</td>
                     <td>@beneficiario.Persona.Apellidos</td>
+                    <td>@beneficiario.Persona.FechaNacimiento</td>
+                    <td>@beneficiario.Persona.CURP</td>
+                    <td>@beneficiario.Persona.SSN</td>
                     <td>@beneficiario.Persona.Telefono</td>
+                    <td>@beneficiario.Persona.Nacionalidad</td>
                     <td>@beneficiario.PorcentajeParticipacion</td>
                     <td><button class="btn btn-primary" id=@beneficiario.BeneficiarioId @onclick="()=>BorrarBeneficiario(beneficiario.BeneficiarioId)">Borrar</button></td>
                 </tr>

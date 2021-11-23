@@ -81,7 +81,7 @@
 <br />
 
 
-@if (forecasts == null)
+@if (empleados == null)
 {
     <p><em>Cargando...</em></p>
 }
@@ -91,23 +91,31 @@ else
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Numero Empleado</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
+                <th>Nacimiento</th>
+                <th>CURP</th>
+                <th>SSN</th>
                 <th>Telefono</th>
-                <th>Numero Empleado</th>
+                <th>Nacionalidad</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var empleado in empleados)
             {
                 <tr>
-                    <td>@forecast.EmpleadoId</td>
-                    <td>@forecast.Persona.Nombre</td>
-                    <td>@forecast.Persona.Apellidos</td>
-                    <td>@forecast.Persona.Telefono</td>
-                    <td>@forecast.NumeroEmpleado</td>
-                    <td><button class="btn btn-primary" id=@forecast.EmpleadoId @onclick="()=>BorrarEmpleado(forecast.EmpleadoId)">Borrar</button></td>
+                    <td>@empleado.EmpleadoId</td>
+                    <td>@empleado.NumeroEmpleado</td>
+                    <td>@empleado.Persona.Nombre</td>
+                    <td>@empleado.Persona.Apellidos</td>
+                    <td>@empleado.Persona.FechaNacimiento</td>
+                    <td>@empleado.Persona.CURP</td>
+                    <td>@empleado.Persona.SSN</td>
+                    <td>@empleado.Persona.Telefono</td>
+                    <td>@empleado.Persona.Nacionalidad</td>
+                    <td><button class="btn btn-primary" id=@empleado.EmpleadoId @onclick="()=>BorrarEmpleado(empleado.EmpleadoId)">Borrar</button></td>
                 </tr>
             }
         </tbody>
@@ -115,7 +123,7 @@ else
 }
 
 @code {
-    private Empleado[]? forecasts;
+    private Empleado[]? empleados;
     private string nombres;
     private string apellidos = string.Empty;
     private DateTime fechaNacimiento = Convert.ToDateTime("1990-01-01");
@@ -127,13 +135,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
+        empleados = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
     }
 
     private async void BorrarEmpleado(int id)
     {
         HttpResponseMessage message = await Http.DeleteAsync("api/Empleado/"+id.ToString());
-        forecasts = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
+        empleados = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
         StateHasChanged();
     }
 
@@ -157,7 +165,7 @@ else
 
 
         HttpResponseMessage message = await Http.PostAsJsonAsync("api/Empleado", empleado);
-        forecasts = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
+        empleados = await Http.GetFromJsonAsync<Empleado[]>("api/Empleado");
         StateHasChanged();
     }
 
