@@ -1,4 +1,4 @@
-ALTER PROCEDURE InsertBeneficiario
+CREATE PROCEDURE InsertBeneficiario
 	@BeneficiarioId INT,
 	@EmpleadoId INT,
 	@Nombre NVARCHAR(MAX),
@@ -33,21 +33,14 @@ BEGIN
 END
 
 
-EXEC InsertBeneficiario
-NULL,
-8,
-'fghfgh',
-'najeergtra',
-'1986-01-05',
-'NADA8reg60915',
-'65er463GDSG',
-'45354663456',
-'Mexicana',
-40
-
-
-select * from Persona
-select * from Empleado
-select * from Beneficiario
-
-
+--EXEC InsertBeneficiario
+--NULL,
+--1,
+--'fghfgh',
+--'najeergtra',
+--'1986-01-05',
+--'NADA8reg60915',
+--'65er463GDSG',
+--'45354663456',
+--'Mexicana',
+--40

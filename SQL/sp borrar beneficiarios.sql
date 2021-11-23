@@ -1,4 +1,4 @@
-ALTER PROCEDURE DeleteBeneficiario
+CREATE PROCEDURE DeleteBeneficiario
 	@BeneficiarioId INT
 	AS
 BEGIN
@@ -14,7 +14,3 @@ END
 
 --EXEC DeleteBeneficiario 2
 
-
-select * from Persona
-select * from Empleado
-select * from Beneficiario

@@ -1,4 +1,4 @@
-ALTER PROCEDURE DeleteEmpleado
+CREATE PROCEDURE DeleteEmpleado
 	@EmpleadoId INT
 	AS
 BEGIN
@@ -12,12 +12,7 @@ BEGIN
 	
 END
 
-exec sp_executesql N'EXEC DeleteEmpleado @p0',N'@p0 int',@p0=1007
+
 --EXEC DeleteEmpleado 2
-
-
-select * from Persona
-select * from Empleado
-select * from Beneficiario
 
 
